@@ -6,6 +6,41 @@
 	// Use a child theme instead of placing custom functions here
 	// http://codex.wordpress.org/Child_Themes
 
+add_action( 'after_setup_theme', 'deel_setup' );
+
+function deel_setup(){
+	//去除头部冗余代码
+	remove_action( 'wp_head',   'feed_links_extra', 3 ); 
+	remove_action( 'wp_head',   'rsd_link' ); 
+	remove_action( 'wp_head',   'wlwmanifest_link' ); 
+	remove_action( 'wp_head',   'index_rel_link' ); 
+	remove_action( 'wp_head',   'start_post_rel_link', 10, 0 ); 
+	remove_action( 'wp_head',   'wp_generator' ); 
+	//阻止站内PingBack
+	//if( dopt('d_pingback_b') ){
+		add_action('pre_ping','deel_noself_ping');   
+	//}
+	//文章末尾增加版权
+	add_filter('the_content','deel_copyright'); 
+}
+
+//阻止站内文章Pingback 
+function deel_noself_ping( &$links ) {
+  $home = get_option( 'home' );
+  foreach ( $links as $l => $link )
+  if ( 0 === strpos( $link, $home ) )
+  unset($links[$l]);
+}
+
+//文章（包括feed）末尾加版权说明
+function deel_copyright($content) {
+	if( !is_page() ){
+		$content.= '<p>本文地址：<a href="'.get_bloginfo('url').'">'.get_bloginfo('name').'</a> &raquo; <a href="'.get_permalink().'">'.get_the_title().'</a></p>';
+	}
+	return $content;
+}
+
+
 
 /* ------------------------------------------------------------------------- *
  *  OptionTree framework integration: Use in theme mode
@@ -127,7 +162,7 @@ if ( ! function_exists( 'alx_styles' ) ) {
 	
 	function alx_styles() {
 		wp_enqueue_style( 'style', get_stylesheet_uri() );
-		if ( ot_get_option('responsive') != 'off' ) { wp_enqueue_style( 'responsive', get_template_directory_uri().'/responsive.css' ); }
+		if ( !ot_get_option('responsive') ) { wp_enqueue_style( 'responsive', get_template_directory_uri().'/responsive.css' ); }
 		wp_enqueue_style( 'font-awesome', get_template_directory_uri().'/fonts/font-awesome.min.css' );
 	}
 	
@@ -501,8 +536,8 @@ if ( ! function_exists( 'alx_body_class' ) ) {
 
 	function alx_body_class( $classes ) {
 		$classes[] = alx_layout_class();
-		if ( ot_get_option( 'boxed' ) != 'on' ) { $classes[] = 'full-width'; }
-		if ( ot_get_option( 'boxed' ) == 'on' ) { $classes[] = 'boxed'; }
+		if ( !ot_get_option( 'boxed' ) ) { $classes[] = 'full-width'; }
+		if ( ot_get_option( 'boxed' ) ) { $classes[] = 'boxed'; }
 		if ( has_nav_menu('topbar') ) {	$classes[] = 'topbar-enabled'; }
 		if ( ot_get_option( 'mobile-sidebar-hide' ) == 's1' ) { $classes[] = 'mobile-sidebar-hide-s1'; }
 		if ( ot_get_option( 'mobile-sidebar-hide' ) == 's2' ) { $classes[] = 'mobile-sidebar-hide-s2'; }
