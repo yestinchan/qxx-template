@@ -108,7 +108,7 @@ if ( ! function_exists( 'alx_setup' ) ) {
 		add_theme_support( 'woocommerce' );
 		
 		// Thumbnail sizes
-		add_image_size( 'thumb-small', 160, 160, true );
+		//add_image_size( 'thumb-small', 160, 160, true );
 		add_image_size( 'thumb-medium', 520, 245, true );
 		add_image_size( 'thumb-large', 720, 340, true );
 
