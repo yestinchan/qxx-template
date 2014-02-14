@@ -42,6 +42,10 @@
 			</div>
 		<?php endif; ?>
 		
+		<?php 
+		get_template_part('inc/post-end-content');
+		?>
+		
 		<?php if ( ot_get_option( 'post-nav' ) == 'content') { get_template_part('inc/post-nav'); } ?>
 		
 		<?php if ( ot_get_option( 'related-posts' ) != '1' ) { get_template_part('inc/related-posts'); } ?>
